@@ -14,18 +14,18 @@
 *
 *   ACTIVE COMMANDS
 *
-*   0x87 set backlight level of LCD   0-31  // i2cset -y 2 0x2A 0x87 31 +CRC
-*OLD:  0x8C  set RGB value of LED              // i2cset -y 2 0x2A 0x8C 0xRR 0xGG 0xBB +CRC i         (replace RR GG BB by value 0-255)
-*   0x8D  set Relay 1                       // i2cset -y 2 0x2A 0x8D 0x00 +CRC                     (0x00 = off  0xFF = on)
-*   0x8E  set Relay 2                       // i2cset -y 2 0x2A 0x8E 0x00 +CRC                    (0x00 = off  0xFF = on)
-*   0x8F  set Relay 3                       // i2cset -y 2 0x2A 0x8F 0x00 +CRC                    (0x00 = off  0xFF = on)
-*   0x90  set D13 / PC7                     // i2cset -y 2 0x2A 0x90 0x00 +CRC                    (0x00 = off  0xFF = on)
-*   0x91  set HWB / PE2                     // i2cset -y 2 0x2A 0x91 0x00 +CRC                    (0x00 = off  0xFF = on)
-*   0x92  set Buzzer / PB5                  // i2cset -y 2 0x2A 0x92 0x00 +CRC                    (0x00 = off, 0x01 on for click sound,0xFF = on)
-*   0x93  set Vent power                    // i2cset -y 2 0x2A 0x93 0x00 +CRC                    (PWM:  0x00 = on ... 0xFF = off)
-*   0x94  set R color
-*   0x95  set G color
-*   0x96  set B color 
+*      0x87 set backlight level of LCD   0-31  // i2cset -y 2 0x2A 0x87 31 +CRC
+* OLD: 0x8C  set RGB value of LED              // i2cset -y 2 0x2A 0x8C 0xRR 0xGG 0xBB +CRC i         (replace RR GG BB by value 0-255)
+*      0x8D  set Relay 1                       // i2cset -y 2 0x2A 0x8D 0x00 +CRC                     (0x00 = off  0xFF = on)
+*      0x8E  set Relay 2                       // i2cset -y 2 0x2A 0x8E 0x00 +CRC                    (0x00 = off  0xFF = on)
+*      0x8F  set Relay 3                       // i2cset -y 2 0x2A 0x8F 0x00 +CRC                    (0x00 = off  0xFF = on)
+*      0x90  set D13 / PC7                     // i2cset -y 2 0x2A 0x90 0x00 +CRC                    (0x00 = off  0xFF = on)
+*      0x91  set HWB / PE2                     // i2cset -y 2 0x2A 0x91 0x00 +CRC                    (0x00 = off  0xFF = on)
+*      0x92  set Buzzer / PB5                  // i2cset -y 2 0x2A 0x92 0x00 +CRC                    (0x00 = off, 0x01 on for click sound,0xFF = on)
+*      0x93  set Vent power                    // i2cset -y 2 0x2A 0x93 0x00 +CRC                    (PWM:  0x00 = on ... 0xFF = off)
+*      0x94  set R color
+*      0x95  set G color
+*      0x96  set B color 
 *
 *
 *  READOUT VALUES
@@ -500,7 +500,7 @@ ISR(TWI_vect) {
 void setup(void)
 {
    DDRF = 0b00000000;
-   DDRD = 0b11111000;
+   DDRD = 0b10111000;
    PORTD= 0b00000000;
    DDRE = 0b00000000; 
    DDRE |= (1<<2);   // be carefull with hwb, check if its connected to GND via 10k (prototypes!)

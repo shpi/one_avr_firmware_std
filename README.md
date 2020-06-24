@@ -1,4 +1,4 @@
-# SHPI.zero Basic ATmega32u4 Firmware
+# SHPI.one Basic ATmega32u4 Firmware
 
 Basic firmware for ATmega32u4 as I2C-Slave
 

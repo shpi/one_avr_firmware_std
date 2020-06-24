@@ -12,15 +12,15 @@ Basic firmware for ATmega32u4 as I2C-Slave
 - uses counter0 for VENT PWM
 
 ## prerequisites
-A SHPI.zero with GCC and DFU-programmer installed.
+A SHPI.one with GCC and DFU-programmer installed.
 
 
 
 ## Getting Started
 
-Download GIT folder on your SHPI.zero:
+Download GIT folder on your SHPI.one:
 ```bash
-git clone https://github.com/shpi/zero_avr_firmware_std.git
+git clone https://github.com/shpi/one_firmware_std.git
 ```
 
 
@@ -60,7 +60,7 @@ i2cset -y 2 0x2A 0x8c 0xFF 0xFF 0xFF i
 ## Compile & flash
 To compile and flash:
 ```bash
-cd zero_avr_firmware
+cd one_firmware_std
 sudo make flash
 ```
 

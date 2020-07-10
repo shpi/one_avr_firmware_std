@@ -96,7 +96,7 @@
 #include <avr/power.h>
 #include <avr/io.h>
 #include <stdlib.h>
-#define DELAY 10
+#define DELAY 1
 #define WAIT 120
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -107,8 +107,8 @@
 #define ws2812_pin  5   
 #include "light_ws2812.c"
 #include "light_ws2812.h"
-struct cRGB led[2];
-#define I2C_ADDR 0x2A
+struct cRGB led[1];
+#define I2C_ADDR 0x2a
 #define SDA_LINE  (PIND & (1<<PD1))
 
 uint8_t commandbyte = 0xFF,twdrbuffer, buffer_address,a7count = 0,count,bllevel = 31,newbllevel = 31,changeled,crc,i2cerror = 0;  
@@ -132,7 +132,7 @@ uint16_t commands[] = {
     0x0c4, 0x103, 0x0c5, 0x107, 0x0c6, 0x107, 0x0c7, 0x104,
     0x0c8, 0x108, 0x0c9, 0x10c, 0x0ca, 0x113, 0x0cb, 0x106,
     0x0cc, 0x10d, 0x0cd, 0x118, 0x0ce, 0x110, 0x0cf, 0x100,
-    0xffff,
+    
     0x0ff, 0x1ff, 0x198, 0x106, 0x104, 0x106, 0x000, 0x120,
     0x001, 0x10a, 0x002, 0x100, 0x003, 0x100, 0x004, 0x101,
     0x005, 0x101, 0x006, 0x198, 0x007, 0x106, 0x008, 0x101,
@@ -148,7 +148,7 @@ uint16_t commands[] = {
     0x037, 0x1dd, 0x038, 0x1cc, 0x039, 0x166, 0x03a, 0x177,
     0x03b, 0x122, 0x03c, 0x122, 0x03d, 0x122, 0x03e, 0x122,
     0x03f, 0x122, 0x040, 0x122, 0x052, 0x110, 0x053, 0x110,
-    0xffff,
+    
     0x0ff, 0x1ff, 0x198, 0x106, 0x104, 0x107, 0x018, 0x11d,
     0x017, 0x122, 0x002, 0x177, 0x026, 0x1b2, 0x0e1, 0x179,
     0x0ff, 0x1ff, 0x198, 0x106, 0x104, 0x100, 0x03a, 0x160,
@@ -186,11 +186,12 @@ void initbl() { // init AL3050 single wire dimming
   _delay_us(500);
   PORTD |= _BV(PD4);
   _delay_us(5);
+
 }
 
 void write(uint16_t data, uint8_t count) { //  write routine for LCD setup
   PORTD &= ~_BV(PD4);
-  _delay_us(1);
+
   do {
     PORTB &= ~_BV(PB2);
     PORTB |= (((data & (1 << (count - 1))) != 0) << 2); // BITWISE AND -> PB2           
@@ -202,11 +203,15 @@ void write(uint16_t data, uint8_t count) { //  write routine for LCD setup
   } while (count);
   PORTB &= ~_BV(PB2);
   PORTD |= _BV(PD4);
-  _delay_us(1);
+
   
 }
 
 void setup_lcd(void){
+
+   PORTD |= _BV(PD4);
+    _delay_us(5);
+
 
    for(uint16_t x=0;x < 258; x++ )
    {
@@ -517,29 +522,39 @@ void setup(void)
    PCICR |= _BV(PCIE0);              // enable pin change interrupt for PB0 (rpm)
    PCMSK0 |= (1 << PCINT4);
    sei();
+
    led[0].r = 255;
    led[0].g = 255;
    led[0].b = 255;
-   led[1].r = 255;
-   led[1].g = 255;
-   led[1].b = 255;
+
+
+ 
+   //led[1].r = 255;
+   //led[1].g = 255;
+   //led[1].b = 255;
 
 
 
-   ws2812_setleds(led,2);
-   initbl();
+   ws2812_setleds(led,1);
+
+
    setup_lcd();
+
+   initbl();
+
+
    led[0].r = 0;
    led[0].g = 0;
    led[0].b = 0;
 
-   led[1].r = 0;
-   led[1].g = 0;
-   led[1].b = 0;
+ 
+   //led[1].r = 0;
+   //led[1].g = 0;
+   //led[1].b = 0;
+
+   ws2812_setleds(led,1);
 
 
-
-   ws2812_setleds(led,2);
    OCR0A = 210;
    wdt_enable(WDTO_8S);
    bllevel = 0;

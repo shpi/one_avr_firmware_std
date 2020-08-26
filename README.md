@@ -88,7 +88,7 @@ sudo make flash
 |HWB (gasheater)|	0b00010001	|	0x11	|	1 Byte		|	0x00 / 0xFF	|
 |Buzzer		|	0b00010010	|	0x12	|	1 Byte		|	0x00 / 0xFF	|
 |VENT_PWM	|	0b00010011	|	0x13	|	1 Byte		|	0 – 255		|
-|A7_VG(AC curr) |       0b00010110      |       0x14    |       1 Byte          |       0 – 1023         |
+|A7_VG(AC curr) |       0b00010110      |       0x14    |       2 Byte          |       0 – 1023         |
 
 										
 ## I2C write commands									

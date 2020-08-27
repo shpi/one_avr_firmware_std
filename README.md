@@ -58,10 +58,12 @@ i2cset -y 2 0x2A 0x8c 0xFF 0xFF 0xFF i
 
 
 ## Compile & flash
+
 To compile and flash:
 ```bash
 cd one_firmware_std
-sudo make flash```
+sudo make flash
+```
 
 ## I2C commands
 

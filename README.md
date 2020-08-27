@@ -72,24 +72,24 @@ sudo make flash
 |------------------------|-----------------|------------------|-----|-------------------------|-------------------------------------------------------------------------------------------|
 |Range                   |0x01-0x7F        |0x80-0xFF         |     |                         |                                                                                           |
 |                        |                 |                  |     |                         |                                                                                           |
-|A0 (GD0 CC1101)         |0x00             |                  |2    |10bit in 2 Byte, LOW→HIGH|0 -1023                                                                                    |
+|A0 (GD0 CC1101)   |0x00             |                  |2    |10bit in 2 Byte, LOW→HIGH|0 -1023                                                                                    |
 |A1 (MICS CO)            |0x01             |                  |2    |10bit in 2 Byte, LOW→HIGH|0 -1023                                                                                    |
 |A2 (MICS No2)           |0x02             |                  |2    |10bit in 2 Byte, LOW→HIGH|0 -1023                                                                                    |
 |A3 (MICS NH3            |0x03             |                  |2    |10bit in 2 Byte, LOW→HIGH|0 -1023                                                                                    |
 |A4 (MP503)              |0x04             |                  |2    |10bit in 2 Byte, LOW→HIGH|0 -1023                                                                                    |
 |A5 (NTC 10K)            |0x05             |                  |2    |10bit in 2 Byte, LOW→HIGH|0 -1023                                                                                    |
 |A7 (ACS712)             |0x06             |                  |2    |10bit in 2 Byte, LOW→HIGH|0 -1023                                                                                    |
-|BL_LEVEL                |0x07             |0x87              |1    |1 Byte                   |0-31                                                                                       | 
+|BACKLIGHT_LEVEL         |0x07             |0x87              |1    |1 Byte                   |0-31                                                                                       | 
 |VENT_RPM                |0x08             |                  |2    |2 Byte                   |UPM                                                                                        |
-|VCC Atmega              |0x09             |                  |2    |2 Byte                   |in Millivolts                                                                              |
-|Internal Temp Atmega    |0x0A             |                  |2    |2 Byte                   |degree celsius                                                                             |
-|FREERAM                 |0x0B             |                  |2    |2 Byte                   |in Bytes                                                                                   |
+|VCC ATmega              |0x09             |                  |2    |2 Byte                   |in Millivolts                                                                              |
+|Internal Temp ATmega    |0x0A             |                  |2    |2 Byte                   |degree celsius                                                                             |
+|FREERAM ATmega                |0x0B             |                  |2    |2 Byte                   |in Bytes                                                                                   |
 |LED_COLOR               |0x0C             |0x8C              |3    |3 Byte                   |R, G, B → 0-254,0-254,0-254                                                                |
 |Relay1                  |0x0D             |0x8D              |1    |1 Byte                   |0x00=off,  0xFF=on                                                                         |
 |Relay2                  |0x0E             |0x8E              |1    |1 Byte                   |0x00=off,  0xFF=on                                                                         |
 |Relay3                  |0x0F             |0x8F              |1    |1 Byte                   |0x00=off,  0xFF=on                                                                         |
 |D13 (reset RPI)         |0x10             |0x90              |1    |1 Byte                   |0x00=off, 0x01=1sec low for reset*, 0xFF=on                                                |
-|HWB (gasheater)         |0x11             |0x91              |1    |1 Byte                   |0x00=off, 0xFF=on                                                                          |
+|HWB (5Vheat gasheater)         |0x11             |0x91              |1    |1 Byte                   |0x00=off, 0xFF=on                                                                          |
 |Buzzer                  |0x12             |0x92              |1    |1 Byte                   |0x00=off, 0xFF=on, more will follow                                                        |
 |VENT_PWM                |0x13             |0x93              |1    |1 Byte                   |0=max speed, ..., 253=minimum,254=autominimum, 255=off                                     |
 |LED_COLOR_R             |0x14             |0x94  set R color |1    |1 Byte                   |0 – 255                                                                                    |

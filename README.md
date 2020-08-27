@@ -61,7 +61,12 @@ i2cset -y 2 0x2A 0x8c 0xFF 0xFF 0xFF i
 To compile and flash:
 ```bash
 cd one_firmware_std
-sudo make flash|Function                |Read addr        |Write addr        |Bytes|Interpretation           |Range                                                                                      |FIELD7                                                |
+sudo make flash```
+
+## I2C commands
+
+
+|Function                |Read addr        |Write addr        |Bytes|Interpretation           |Range                                                                                      |FIELD7                                                |
 |------------------------|-----------------|------------------|-----|-------------------------|-------------------------------------------------------------------------------------------|------------------------------------------------------|
 |Range                   |0x01-0x7F        |0x80-0xFF         |     |                         |                                                                                           |                                                      |
 |                        |                 |                  |     |                         |                                                                                           |                                                      |
@@ -97,9 +102,7 @@ sudo make flash|Function                |Read addr        |Write addr        |By
 |CRC                     |0x7e             |0xFE              |1    |1 Byte                   |0x00=off, 0xFF=on                                                                          |                                                      |
 |FW_VERSION              |0x7F             |                  |1    |1 Byte                   |0xFF=Pre 2.0, 0x01=2.0                                                                   |                                                      |
 
-```
 
-## I2C commands									
 
 
 ## License

@@ -11,8 +11,6 @@
 
 * Aug 28th, 2020 v2.0 
 *
-*   
-*
 *
 *
 *
@@ -299,7 +297,7 @@ ISR(TWI_vect) {
       else if (commandbyte == 0x8E ) {if (twdrbuffer == 0xFF) {PORTD |= _BV(PD7);} else {PORTD &= ~_BV(PD7); }}  //set Relais 2
       else if (commandbyte == 0x8F ) {if (twdrbuffer == 0xFF) {PORTB |= _BV(PB6);} else {PORTB &= ~_BV(PB6); }} //set Relais 3
       else if (commandbyte == 0x90 ) {if (twdrbuffer == 0xFF) {PORTC |= _BV(PC7);} else {PORTC &= ~_BV(PC7); }} //set D13
-      else if (commandbyte == 0x91 ) {if (twdrbuffer == 0xFF) {PORTE |=  (1<<2);}  else {PORTE &= ~(1<<2);   }}     //set HWB ->Gasheater      (D13 on prototypes)
+      else if (commandbyte == 0x91 ) {if (twdrbuffer == 0x00) {PORTE |=  (1<<2);}  else {PORTE &= ~(1<<2);   }}     //set HWB ->Gasheater      (D13 on prototypes)
       else if (commandbyte == 0x92 ) {if (twdrbuffer == 0xFF) {PORTB |= _BV(PB5);} else if (twdrbuffer == 0x01) {PORTB |= _BV(PB5); twdrbuffer = 0x02;} else {PORTB &= ~_BV(PB5);twdrbuffer = 0x00;}}   //set Buzzer
       else if (commandbyte == 0x93 ) {OCR0A = twdrbuffer;fanlevel = twdrbuffer;}  //set Vent
       else if (commandbyte == 0x94 ) {led[led_position].r = twdrbuffer;changeled = 1;}  //set r color
@@ -443,7 +441,7 @@ ISR(TWI_vect) {
 
 
                  case 0x11:  
-                                 if (buffer_address == 0) {if (bit_is_set(PINE,PE2)) {TWDR = 0xFF;} else {TWDR = 0x00;} crc = _crc8_ccitt_update(crc,TWDR);}
+                                 if (buffer_address == 0) {if (bit_is_set(PINE,PE2)) {TWDR = 0x00;} else {TWDR = 0xff;} crc = _crc8_ccitt_update(crc,TWDR);}
                             else if (crc_active && buffer_address == 1) {TWDR = crc;}
                             else                          {TWDR = 0xFF; buffer_address = 0xFE; i2cerror++;}
                             break;

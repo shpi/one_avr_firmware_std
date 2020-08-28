@@ -103,7 +103,7 @@ Please restart after flashing, to avoid touchscreen issues.
 |DISPLAY CONTROLLER      |0x18             |0x98              |1    |1 Byte                   |0x00=off, 0xFF=on                                                                          |
 |ALL PIXEL ON / OFF      |0x19             |0x99              |1    |1 Byte                   |0x00=off, 0xFF=on                                                                          |
 |WATCHDOG                |0x20             |0xA0              |1    |1 Byte                   |0x00=off, 0x01=only LED, 0xF1=hard reset, 0xFF= hard reset, with fallback                  |
-|RGB led control position|0x21             |0xA1              |1    |1 Byte                   |0x01=LOGO, 0x02=signal LED                                                                 |
+|RGB led control position|0x21             |0xA1              |1    |1 Byte                   |0x00=LOGO, 0x01=signal LED                                                                 |
 |DFU BOOT                    |                 |0xFD              |1    |1 Command                |0xFF=DFU active                                                                            |
 |CRC CHECK                  |0x7e             |0xFE              |1    |1 Byte                   |0x00=off, 0xFF=on                                                                          |
 |FW_VERSION              |0x7F             |                  |1    |1 Byte                   |0xFF=Pre 2.0, 0x01=2.0                                                                     |  

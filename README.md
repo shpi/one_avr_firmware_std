@@ -24,8 +24,16 @@ git clone https://github.com/shpi/one_firmware_std.git
 ```
 
 
+## I2C example commands
 
-## I2C example command
+For running command on console, u need to disable CRC check.
+
+Disable CRC check
+
+```bash
+i2cset -y 2 0x2A 0xFE 0x00             
+
+```
 
 Read relay 1 status
 
@@ -46,24 +54,20 @@ i2cget -y 2 0x2A
 ```
 to read one more byte.
 
-Set RGB LED to white
-
-
-```bash
-i2cset -y 2 0x2A 0x8c 0xFF 0xFF 0xFF i    
-
-```
-
 
 
 
 ## Compile & flash
 
 To compile and flash:
+
 ```bash
 cd one_firmware_std
 sudo make flash
 ```
+
+Please restart after flashing, to avoid touchscreen issues.
+
 
 ## I2C commands
 

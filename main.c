@@ -292,7 +292,7 @@ ISR(TWI_vect) {
 
            if (commandbyte == 0x87 ) {newbllevel = twdrbuffer;}
       else if (commandbyte == 0x98 ) {displaychange = 1; if (twdrbuffer == 0xFF) {write_lcd(0x029,9);write_lcd(0x013,9); display = 0xFF;} else {write_lcd(0x028,9); display = 0x00;}}  // switch display controller on off
-      else if (commandbyte == 0x99 ) {displaychange = 1; if (twdrbuffer == 0xFF) {write_lcd(0x023,9);} else {write_lcd(0x022,9); }}  // display white / black
+      else if (commandbyte == 0x99 ) {displaychange = 1; if (twdrbuffer == 0xFF) {write_lcd(0x023,9);} else if (twdrbuffer == 0x00) {write_lcd(0x022,9); } else {write_lcd(0x013,9);} }  // display white / black
       else if (commandbyte == 0x8D ) {if (twdrbuffer == 0xFF) {PORTC |= _BV(PC6);} else {PORTC &= ~_BV(PC6); }}  //set Relais 1
       else if (commandbyte == 0x8E ) {if (twdrbuffer == 0xFF) {PORTD |= _BV(PD7);} else {PORTD &= ~_BV(PD7); }}  //set Relais 2
       else if (commandbyte == 0x8F ) {if (twdrbuffer == 0xFF) {PORTB |= _BV(PB6);} else {PORTB &= ~_BV(PB6); }} //set Relais 3

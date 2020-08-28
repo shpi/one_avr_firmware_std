@@ -95,15 +95,14 @@
 
 #define FW_VERSION  0x01
 #define I2C_ADDR 0x2A
-#define LCD_WRITE_DELAY 100
-#define LCD_WAIT 120
+#define LCD_WRITE_DELAY 1
+#define LCD_WAIT 100
 #define ws2812_resettime  300 
 #define ws2812_port D   
 #define ws2812_pin  5  
 
 #define SDA_LINE  (PIND & (1<<PD1))
 #define SCL_LINE  (PIND & (1<<PD0))
-
 
 
 
@@ -120,7 +119,7 @@
 #include "light_ws2812.h"
 
 struct cRGB led[255];
-uint8_t watchdog = 0, display = 0xFF, led_position = 0, crc_active = 1, commandbyte = 0xFF,twdrbuffer, buffer_address,a7count = 0,count,bllevel = 31,newbllevel = 31,changeled,crc,i2cerror = 0, fanlevel= 254;  
+uint8_t jumptobootloader = 0, watchdog = 0, display = 0xFF, led_position = 0, crc_active = 1, commandbyte = 0xFF,twdrbuffer, buffer_address,a7count = 0,count,bllevel = 31,newbllevel = 31,changeled,crc,i2cerror = 0, fanlevel= 254;  
 uint16_t a0,a1,a2,a3,a4,a5,a7,a7avg,a7max,a7min,vcc,temp,rpm,fanspin,isrtimer,i2cbuffer = 0, watchi2c = 0;
 
 
@@ -164,22 +163,22 @@ void write_backlight(uint8_t data) { // set single wire brightness  AL3050
   uint8_t count = 8;
   do {
     PORTD &= ~_BV(PD4);
-    _delay_us(100);
+    _delay_us(50);
     if (!(data & (1 << (count - 1)))) {
-      _delay_us(100);
+      _delay_us(50);
     }
     PORTD |= _BV(PD4);
-    _delay_us(100);
+    _delay_us(50);
     if ((data & (1 << (count - 1))) != 0) {
-      _delay_us(100);
+      _delay_us(50);
     }
     count--;
   } while (count);
 
   PORTD &= ~_BV(PD4);
-  _delay_us(100);
+  _delay_us(50);
   PORTD |= _BV(PD4);
-  _delay_us(100);
+  _delay_us(50);
 }
 
 void init_backlight(void) { // init AL3050 single wire dimming
@@ -208,7 +207,7 @@ void write_lcd(uint16_t data, uint8_t count) { //  write routine for LCD setup
   } while (count);
   PORTB &= ~_BV(PB2);
   PORTD |= _BV(PD4);
-
+  _delay_us(LCD_WRITE_DELAY);
   
 }
 
@@ -353,16 +352,16 @@ ISR(TWI_vect) {
       } 
       else { 
 
-      if (commandbyte = 0xFE && buffer_address == 0) {crc_active = TWDR;}
+      if (commandbyte == 0xFE && buffer_address == 0) {crc_active = TWDR;}
  
       else if (crc_active && buffer_address == 0) {twdrbuffer = TWDR;  crc = _crc8_ccitt_update(crc,TWDR);}
 
-      else  if (  (crc_active && (buffer_address == 1) && (TWDR == crc)) ||   (!crc_active && buffer_address == 0) ) {
+      else  if (  (crc_active && (buffer_address == 1) && (TWDR == crc)) ||   (!crc_active && buffer_address == 0) ) { 
 
-           if (commandbyte == 0x87 ) {newbllevel = twdrbuffer;}
-      else if (commandbyte == 0x98 ) {if (twdrbuffer == 0xFF) {write_lcd(0x029,9); display = 0xFF;} else {write_lcd(0x028,9); display = 0x00;}}  // switch display controller on off
+
+      if (commandbyte == 0x87 ) {newbllevel = twdrbuffer;}
+      else if (commandbyte == 0x98 ) {if (twdrbuffer == 0xFF) {write_lcd(0x029,9);write_lcd(0x013,9); display = 0xFF;} else {write_lcd(0x028,9); display = 0x00;}}  // switch display controller on off
       else if (commandbyte == 0x99 ) {if (twdrbuffer == 0xFF) {write_lcd(0x023,9);} else {write_lcd(0x022,9); }}  // display white / black
-    
       else if (commandbyte == 0x8D ) {if (twdrbuffer == 0xFF) {PORTC |= _BV(PC6);} else {PORTC &= ~_BV(PC6); }}  //set Relais 1
       else if (commandbyte == 0x8E ) {if (twdrbuffer == 0xFF) {PORTD |= _BV(PD7);} else {PORTD &= ~_BV(PD7); }}  //set Relais 2
       else if (commandbyte == 0x8F ) {if (twdrbuffer == 0xFF) {PORTB |= _BV(PB6);} else {PORTB &= ~_BV(PB6); }} //set Relais 3
@@ -373,8 +372,7 @@ ISR(TWI_vect) {
       else if (commandbyte == 0x94 ) {led[led_position].r = twdrbuffer;changeled = 1;}  //set r color
       else if (commandbyte == 0x95 ) {led[led_position].g = twdrbuffer;changeled = 1;}  //set g color
       else if (commandbyte == 0x96 ) {led[led_position].b = twdrbuffer;changeled = 1;}  //set b color
-      //else if (commandbyte == 0xFE ) {crc_active = twdrbuffer;}
-      else if (commandbyte == 0xFD ) {asm volatile("jmp 0x7000"); } //jump to bootloader
+      else if (commandbyte == 0xFD ) {if (twdrbuffer == 0xFF) jumptobootloader = 1; } //jump to bootloader
       else if (commandbyte == 0xA1 ) {led_position = twdrbuffer;}
       else if (commandbyte == 0xA0 ) {watchdog = twdrbuffer;}
 
@@ -628,7 +626,7 @@ void setup(void)
    OCR0A = 210;
    wdt_enable(WDTO_8S);
    bllevel = 0;
-   newbllevel = 31;
+   
 }
 
 
@@ -638,6 +636,14 @@ int main(void)
   setup();
 
   while(1) {  
+
+
+  if (jumptobootloader > 0) {
+   TWCR =   (1<<TWSTO)|(1<<TWIE) | (1<<TWINT) | (1<<TWEA) | (0<<TWEN);
+   asm volatile("jmp 0x7C00");
+  }
+
+ 
 
   if (watchdog == 0x01) {
 
@@ -671,15 +677,16 @@ int main(void)
       changeled = 0;
                      }
 
-  if (0 <= newbllevel && newbllevel < 32) {
-  if (newbllevel != bllevel) {
+  if (newbllevel != bllevel  && 0 <= newbllevel && newbllevel < 32) {
 
-  if (newbllevel < bllevel) {bllevel--;}               // smooth backlight level change in steps
-  else {bllevel++;}
+  if (newbllevel < bllevel) {bllevel--;}   else {bllevel++;}
 
-  write_backlight(0b01011000);   write_backlight(0b00011111 & bllevel);
+  write_backlight(0b01011000);
+  write_backlight(0b00011111 & bllevel);
   }
-  }
+  
+
+
 
   if (adcselect < 10) {adcselect++;} else {adcselect = 0;}
   

@@ -119,7 +119,7 @@
 #include "light_ws2812.h"
 
 struct cRGB led[255];
-uint8_t jumptobootloader = 0, watchdog = 0, display = 0xFF, led_position = 0, crc_active = 1, commandbyte = 0xFF,twdrbuffer, buffer_address,a7count = 0,count,bllevel = 31,newbllevel = 31,changeled,crc,i2cerror = 0, fanlevel= 254;  
+uint8_t displaychange = 0, jumptobootloader = 0, watchdog = 0, display = 0xFF, led_position = 0, crc_active = 1, commandbyte = 0xFF,twdrbuffer, buffer_address,a7count = 0,count,bllevel = 31,newbllevel = 31,changeled,crc,i2cerror = 0, fanlevel= 254;  
 uint16_t a0,a1,a2,a3,a4,a5,a7,a7avg,a7max,a7min,vcc,temp,rpm,fanspin,isrtimer,i2cbuffer = 0, watchi2c = 0;
 
 
@@ -156,7 +156,7 @@ uint16_t data_lcd_shpi397[] = {
     0x0ff, 0x1ff, 0x198, 0x106, 0x104, 0x107, 0x018, 0x11d,
     0x017, 0x122, 0x002, 0x177, 0x026, 0x1b2, 0x0e1, 0x179,
     0x0ff, 0x1ff, 0x198, 0x106, 0x104, 0x100, 0x03a, 0x160,
-    0x035, 0x100, 0x011, 0x100,    0xffff, 0x029, 0x100,    0xffff};
+    0x035, 0x100, 0x011, 0x100,    0xffff, 0x029, 0x013, 0x100,    0xffff};
 
 
 void write_backlight(uint8_t data) { // set single wire brightness  AL3050 
@@ -190,7 +190,8 @@ void init_backlight(void) { // init AL3050 single wire dimming
   _delay_us(500);
   PORTD |= _BV(PD4);
   _delay_us(5);
-
+  bllevel = 31;
+  newbllevel = 31;
 }
 
 void write_lcd(uint16_t data, uint8_t count) { //  write routine for LCD setup
@@ -352,16 +353,20 @@ ISR(TWI_vect) {
       } 
       else { 
 
-      if (commandbyte == 0xFE && buffer_address == 0) {crc_active = TWDR;}
+      if (buffer_address == 0) {
+					      twdrbuffer = TWDR;
+      					      if (commandbyte == 0xFE) crc_active = twdrbuffer;
+       					      crc = _crc8_ccitt_update(crc,TWDR);
+
+      }
  
-      else if (crc_active && buffer_address == 0) {twdrbuffer = TWDR;  crc = _crc8_ccitt_update(crc,TWDR);}
 
-      else  if (  (crc_active && (buffer_address == 1) && (TWDR == crc)) ||   (!crc_active && buffer_address == 0) ) { 
+      if ((crc_active && (buffer_address == 1) && (TWDR == crc)) ||   (!crc_active && buffer_address == 0) ) { 
 
 
-      if (commandbyte == 0x87 ) {newbllevel = twdrbuffer;}
-      else if (commandbyte == 0x98 ) {if (twdrbuffer == 0xFF) {write_lcd(0x029,9);write_lcd(0x013,9); display = 0xFF;} else {write_lcd(0x028,9); display = 0x00;}}  // switch display controller on off
-      else if (commandbyte == 0x99 ) {if (twdrbuffer == 0xFF) {write_lcd(0x023,9);} else {write_lcd(0x022,9); }}  // display white / black
+           if (commandbyte == 0x87 ) {newbllevel = twdrbuffer;}
+      else if (commandbyte == 0x98 ) {displaychange = 1; if (twdrbuffer == 0xFF) {write_lcd(0x029,9);write_lcd(0x013,9); display = 0xFF;} else {write_lcd(0x028,9); display = 0x00;}}  // switch display controller on off
+      else if (commandbyte == 0x99 ) {displaychange = 1; if (twdrbuffer == 0xFF) {write_lcd(0x023,9);} else {write_lcd(0x022,9); }}  // display white / black
       else if (commandbyte == 0x8D ) {if (twdrbuffer == 0xFF) {PORTC |= _BV(PC6);} else {PORTC &= ~_BV(PC6); }}  //set Relais 1
       else if (commandbyte == 0x8E ) {if (twdrbuffer == 0xFF) {PORTD |= _BV(PD7);} else {PORTD &= ~_BV(PD7); }}  //set Relais 2
       else if (commandbyte == 0x8F ) {if (twdrbuffer == 0xFF) {PORTB |= _BV(PB6);} else {PORTB &= ~_BV(PB6); }} //set Relais 3
@@ -375,9 +380,9 @@ ISR(TWI_vect) {
       else if (commandbyte == 0xFD ) {if (twdrbuffer == 0xFF) jumptobootloader = 1; } //jump to bootloader
       else if (commandbyte == 0xA1 ) {led_position = twdrbuffer;}
       else if (commandbyte == 0xA0 ) {watchdog = twdrbuffer;}
-
-
       else {i2cerror++;} 
+
+
       } 
       else {i2cerror++;}
 
@@ -625,7 +630,6 @@ void setup(void)
 
    OCR0A = 210;
    wdt_enable(WDTO_8S);
-   bllevel = 0;
    
 }
 
@@ -671,6 +675,7 @@ int main(void)
   if (rpm < 1800) {OCR0A--;}
   }
   }
+  if (displaychange) {init_backlight(); displaychange = 0;}
 
   if (changeled)  {
       ws2812_setleds(led,led_position+1);

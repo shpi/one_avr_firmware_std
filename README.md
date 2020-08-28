@@ -101,7 +101,7 @@ Please restart after flashing, to avoid touchscreen issues.
 |LED_COLOR_B             |0x16             |0x96  set B color |1    |1 Byte                   |0 – 255                                                                                    |
 |A7_AVG (AC curr)          |0x17 (prev.:0x14)|                  |2    |2 Byte                   |0 – 1023                                                                                   |
 |DISPLAY CONTROLLER      |0x18             |0x98              |1    |1 Byte                   |0x00=off, 0xFF=on                                                                          |
-|ALL PIXEL ON / OFF      |0x19             |0x99              |1    |1 Byte                   |0x00=off, 0xFF=on                                                                          |
+|ALL PIXEL ON / OFF      |0x19             |0x99              |1    |1 Byte                   |0x00=off, 0x01=normal , 0xFF=on                                                                          |
 |WATCHDOG                |0x20             |0xA0              |1    |1 Byte                   |0x00=off, 0x01=only LED, 0xF1=hard reset, 0xFF= hard reset, with fallback                  |
 |RGB led control position|0x21             |0xA1              |1    |1 Byte                   |0x00=LOGO, 0x01=signal LED                                                                 |
 |DFU BOOT                    |                 |0xFD              |1    |1 Command                |0xFF=DFU active                                                                            |

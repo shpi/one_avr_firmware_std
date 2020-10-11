@@ -482,6 +482,8 @@ ISR(TWI_vect)
 				case 0x93:
 				case 0x94:
 				case 0x95:
+				case 0xA1:
+				case 0XA0:
 				case 0x96:  { TWDR = crc;  crc = 0xFF;}
 				break;
 
@@ -760,7 +762,19 @@ int main(void)
 		if (jumptobootloader > 0)
 		{
 			TWCR =   (1<<TWSTO)|(1<<TWIE) | (1<<TWINT) | (1<<TWEA) | (0<<TWEN);
-			asm volatile("jmp 0x7C00");
+			cli();
+			wdt_disable();
+			UDCON = 1;
+			USBCON = (1<<FRZCLK);  // disable USB
+			UCSR1B = 0;
+			_delay_ms(50);
+    			EIMSK = 0; PCICR = 0; SPCR = 0; ACSR = 0; EECR = 0; ADCSRA = 0;
+    			TIMSK0 = 0; TIMSK1 = 0; TIMSK3 = 0; TIMSK4 = 0; UCSR1B = 0; TWCR = 0;
+    			DDRB = 0; DDRC = 0; DDRD = 0; DDRE = 0; DDRF = 0; TWCR = 0;
+    			PORTB = 0; PORTC = 0; PORTD = 0; PORTE = 0; PORTF = 0;
+    			asm volatile("jmp 0x7000");
+
+
 		}
 
 		if (watchdog == 0x01)

@@ -779,7 +779,7 @@ ISR(TWI_vect)
 
 			}
 
-			_delay_us(3);
+			_delay_us(10);
 
 			buffer_address++;
 			TWCR = (1<<TWIE) | (1<<TWINT) | (1<<TWEA) | (1<<TWEN);

@@ -802,7 +802,7 @@ ISR(TWI_vect)
 void setup(void)
 {
 	DDRF = 0b00000000;
-	DDRD = 0b10111000;
+	DDRD = 0b10111011;
 	PORTD= 0b00000000;
 	DDRE = 0b00000000;
 	DDRE |= (1<<2);				 // be carefull with hwb, check if its connected to GND via 10k (prototypes!)
@@ -813,6 +813,7 @@ void setup(void)
 	TCCR0A  =  0b10000011;		 // 8bit  62khz
 	TIMSK0 |= (1 << TOIE0);		 // init interrupt for timer0 overflow
 	clock_prescale_set(clock_div_1);
+	 _delay_ms(100);
 	I2C_init(I2C_ADDR);
 	PCICR |= _BV(PCIE0);		 // enable pin change interrupt for PB0 (rpm)
 	PCMSK0 |= (1 << PCINT4);

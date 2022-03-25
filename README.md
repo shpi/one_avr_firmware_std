@@ -13,7 +13,9 @@ Basic firmware for ATmega32u4 as I2C-Slave
 
 ## prerequisites
 A SHPI.one with GCC and DFU-programmer installed.
-
+```bash
+sudo apt-get install dfu-programmer gcc-avr binutils-avr avr-libc
+```
 
 
 ## Getting Started

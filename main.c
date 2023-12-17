@@ -801,6 +801,8 @@ ISR(TWI_vect)
 
 void setup(void)
 {
+        UDCON = 1;
+        USBCON = (1<<FRZCLK); 
 	DDRF = 0b00000000;
 	DDRD = 0b10111011;
 	PORTD= 0b00000000;

@@ -90,7 +90,7 @@ Please restart after flashing, to avoid touchscreen issues.
 |VCC ATmega              |0x09             |                  |2    |2 Byte                   |in Millivolts                                                                              |
 |Internal Temp ATmega    |0x0A             |                  |2    |2 Byte                   |degree celsius                                                                             |
 |FREERAM ATmega                |0x0B             |                  |2    |2 Byte                   |in Bytes                                                                                   |
-|LED_COLOR               |0x0C             |0x8C              |3    |3 Byte                   |R, G, B → 0-254,0-254,0-254                                                                |
+|LED_COLOR               |0x0C             |              |3    |3 Byte                   |R, G, B → 0-254,0-254,0-254                                                                |
 |Relay1                  |0x0D             |0x8D              |1    |1 Byte                   |0x00=off,  0xFF=on                                                                         |
 |Relay2                  |0x0E             |0x8E              |1    |1 Byte                   |0x00=off,  0xFF=on                                                                         |
 |Relay3                  |0x0F             |0x8F              |1    |1 Byte                   |0x00=off,  0xFF=on                                                                         |

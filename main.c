@@ -1,5 +1,5 @@
 /*
- *  SHPI.one Basic Firmware v1.2 BETA
+ *  SHPI.one Basic Firmware v2.0
  *
  *
  *
